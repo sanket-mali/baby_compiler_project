@@ -17,7 +17,7 @@ char ** lexer(char *file)
         track_token++;
         if((strcmp(current_token,"print")==0) && state !=1)
         {
-            printf("found print\n");
+            //printf("found print\n");
             temp=current_token;
             token[list]=temp;
             list++;
@@ -30,12 +30,12 @@ char ** lexer(char *file)
         {
             if(state==0)
             {
-                printf("first quote\n");
+                //printf("first quote\n");
                 state=1;
             }
             else if(state==1)
             {
-                printf("found string\n");
+                //printf("found string\n");
                 state=0;
                 temp=current_token;
                 token[list]=temp;
@@ -48,7 +48,7 @@ char ** lexer(char *file)
         }
         else if(strcmp(current_token," ")==0 && state!=1)
         {
-            printf("found space\n");
+            //printf("found space\n");
             track_token=0;
             free(freememory);
             char *freememory=malloc(sizeof(char));
@@ -65,7 +65,7 @@ char *substr(char *str,int start,int length)
 {
     char *substring=malloc(sizeof(str));
     int i,j=0;
-    for(i=start;i<length;i++)
+    for(i=start;i<start+length;i++)
     {
         substring[j]=str[i];
         j++;
@@ -77,14 +77,18 @@ void parse(char **token)
     int i;
     for(i=0;i<list;i=i+2)
     {
-       /* char *com_token=malloc(2*sizeof(token[i]));
+        char *com_token=malloc(2*sizeof(token[i]));
         strcat(token[i],token[i+1]);
         com_token=token[i];
-        if(strcmp(com_token,"print\""))*/
-        strcat(token[i],token[i+1]);
-        puts(token[i]);
-        puts(substr(token[i],0,6));
+        if(strcmp(com_token,"print\""))
+        {
+            puts(substr(com_token,6,strlen(com_token)-7));
+        }
     }
+
+}
+void print()
+{
 
 }
 int main(int argc , char *argv[])
