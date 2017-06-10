@@ -4,20 +4,18 @@
 int list=0;
 char ** lexer(char *file)
 {
-    int i,track_token=0,state=0,j;
+    int i,track_token=0,state=0,j,k=0,state1=0,sign_state=0;
     puts(file);
     char symbol;
-    char *current_token=malloc(sizeof(char)),*temp,*freememory;
+    char *current_token=malloc(sizeof(char)),*temp,*freememory,*expr=malloc(sizeof(char)),*temp1;
     char ** token=malloc(sizeof(char *));
     for(i=0;i<strlen(file);i++)
     {
-        current_token[track_token]=file[i];
         symbol=file[i];
-        //puts(current_token);
+        current_token[track_token]=symbol;
         track_token++;
         if((strcmp(current_token,"print")==0) && state !=1)
         {
-            //printf("found print\n");
             temp=current_token;
             token[list]=temp;
             list++;
@@ -30,12 +28,10 @@ char ** lexer(char *file)
         {
             if(state==0)
             {
-                //printf("first quote\n");
                 state=1;
             }
             else if(state==1)
             {
-                //printf("found string\n");
                 state=0;
                 temp=current_token;
                 token[list]=temp;
@@ -46,9 +42,50 @@ char ** lexer(char *file)
                 current_token=freememory;
             }
         }
+        else if(symbol==';' && state1!=1)
+        {
+            track_token=0;
+            free(freememory);
+            char *freememory=malloc(sizeof(char));
+            current_token=freememory;
+        }
+        else if((symbol=='1' || symbol=='2' || symbol=='3' || symbol=='4' || symbol=='5' || symbol=='6' || symbol=='7' || symbol=='8'|| symbol=='9' || symbol=='0' || symbol==';') && state!=1)
+        {
+            state1=1;
+            if(symbol==';')
+            {
+                temp1=expr;
+                if(sign_state==1)
+                {
+                    token[list]=strcat(temp1,":expr");
+                }
+                else
+                {
+                    token[list]=strcat(temp1,":num");
+                }
+                list++;
+                k=0;
+                state1=0;
+                track_token=0;
+                free(freememory);
+                char *freememory=malloc(sizeof(char));
+                expr=freememory;
+                current_token=freememory;
+            }   
+            else
+            {
+                expr[k]=symbol;
+                k++;
+            }
+        }
+        else if((state!=1 && symbol=='+') && state1==1)
+        {
+            sign_state=1;
+            expr[k]='+';
+            k++;
+        }
         else if(strcmp(current_token," ")==0 && state!=1)
         {
-            //printf("found space\n");
             track_token=0;
             free(freememory);
             char *freememory=malloc(sizeof(char));
@@ -72,23 +109,38 @@ char *substr(char *str,int start,int length)
     }
     return substring;
 }
+void evalexpr()
+{
+    
+}
 void parse(char **token)
 {
     int i;
     for(i=0;i<list;i=i+2)
     {
         char *com_token=malloc(2*sizeof(token[i]));
+        //if()
         strcat(token[i],token[i+1]);
         com_token=token[i];
-        if(strcmp(com_token,"print\""))
+        puts(com_token);
+        if(strcmp(substr(com_token,0,6),"print\"")==0)
         {
             puts(substr(com_token,6,strlen(com_token)-7));
         }
+        else if(strcmp(substr(com_token,strlen(com_token)-4,4),":num")==0 && strcmp(substr(com_token,0,5),"print")==0)
+        {
+            puts(substr(com_token,5,strlen(com_token)-9));
+        }
+        else if(strcmp(substr(com_token,0,5),"print")==0 && strcmp(substr(com_token,strlen(com_token)-5,5),":expr")==0)
+        {
+            evalexpr(com_token,5,strlen(com_token)-10);
+        }
+        /*else
+        {
+            printf("ok");
+            printf("check your program at line no:%d\n",i/2);
+        }*/
     }
-
-}
-void print()
-{
 
 }
 int main(int argc , char *argv[])
@@ -123,11 +175,11 @@ int main(int argc , char *argv[])
     fclose(fp);
     char **ret_token_list=lexer(file);
     //int len=strlen(ret)/;
-    /*printf("%d\n",list);
-    for(i=0;i<list;i=i+2)
+    printf("%d\n",list);
+    for(i=0;i<list;i++)
     {
-        printf("%s %s\n",ret_token_list[i],ret_token_list[i+1]);
-    }*/
+      //  printf("lex:%s\n",ret_token_list[i]);
+    }
     parse(ret_token_list);
     return 0;
 }
