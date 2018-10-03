@@ -236,11 +236,7 @@ void parse(char **token)
            evalexpr(substr(com_token,5,strlen(com_token)-10));
            //puts(substr(com_token,5,strlen(com_token)-10));
         }
-        /*else
-        {
-            printf("ok");
-            printf("check your program at line no:%d\n",i/2);
-        }*/
+        
     }
 
 }
