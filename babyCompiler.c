@@ -276,7 +276,7 @@ int main(int argc , char *argv[])
         i++;
     }
     fclose(fp);
-    //called the lexer function which return list of token
+    //call the lexer function which return list of token
     char **ret_token_list=lexer(file);
     //printf("%d\n",list);
     //parse those token
