@@ -241,6 +241,7 @@ void parse(char **token)
 
 }
 //main function for taking file input and convert it to a string call function lexer with the string 
+//test
 int main(int argc , char *argv[])
 {
     FILE *fp;//file pointer
